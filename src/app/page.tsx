@@ -1,23 +1,26 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import {
+  Header,
+  HeroSection,
+  FeaturesSection,
+  AboutSection,
+  CallToAction,
+  ContactSection,
+  Footer,
+} from "./homePageComponents";
 
 const Homepage = () => {
-  const router = useRouter();
-
-  useEffect(() => {
-    setTimeout(() => {
-      router.push("/admin");
-    }, 5000);
-  }, []);
-
   return (
-    <div className="">
-      <h1>Homepage will redirect to admin page in few seconds,</h1>
-      <h2>/student for student dashboard</h2>
-      <h2>/teacher for teacher dashboard</h2>
-      <h2>/parent for parent dashboard</h2>
+    <div className="bg-gray-100 text-gray-800">
+      <Header />
+
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <AboutSection />
+        <CallToAction />
+        <ContactSection />
+      </main>
+      <Footer />
     </div>
   );
 };
