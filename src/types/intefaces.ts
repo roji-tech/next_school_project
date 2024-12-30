@@ -10,6 +10,7 @@ export interface User {
   gender?: string;
   phone?: string;
   accessTokenExpires?: number;
+  schoolLogo?: string;
   // refreshTOken?: string;
 }
 

@@ -1,6 +1,9 @@
+"use client";
+
 import Menu from "@/components/Menu";
 import MobileMenu from "@/components/MobileMenu";
 import Navbar from "@/components/Navbar";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,6 +12,39 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { data: session, status } = useSession() as {
+    data: { user: { schoolLogo?: string } } | null;
+    status: string;
+  };
+
+  // If session is loading, show a loading indicator
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <img
+            src={session?.user?.schoolLogo || "/logo.png"}
+            alt="School Logo"
+            className="w-20 h-20 mx-auto mb-6 animate-pulse"
+            style={{ animation: "scaleAnimation 1s infinite" }}
+          />
+          <p>Loading...</p>
+        </div>
+        <style jsx>{`
+          @keyframes scaleAnimation {
+            0%,
+            100% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.5);
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen flex">
       {/* LEFT */}
