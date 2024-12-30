@@ -1,9 +1,16 @@
 export interface User {
-  name?: string | null | undefined;
+  fullName?: string | null | undefined;
+  firstName?: string | null | undefined;
+  lastName?: string | null | undefined;
+  image?: string | null | undefined;
   role?: string;
-  userName?: string;
+  username?: string;
   accessToken?: string;
-  refreshTOken?: string;
+  email?: string;
+  gender?: string;
+  phone?: string;
+  accessTokenExpires?: number;
+  // refreshTOken?: string;
 }
 
 // Interface for expected request body structure

@@ -97,6 +97,7 @@ export default withAuth(
 // Matcher configuration for the protected routes
 export const config = {
   matcher: [
+    "/dashboard/:path*",
     "/admin/:path*",
     "/student/:path*",
     "/parent/:path*",
