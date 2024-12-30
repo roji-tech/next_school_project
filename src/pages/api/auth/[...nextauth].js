@@ -87,7 +87,7 @@ export default async function auth(req, res) {
 
           try {
             const config = {
-              url: `http://127.0.0.1:8000/api/v1/auth/token/`,
+              url: `http://127.0.0.1:8000/api/v1/auth/login/`,
               method: "post",
               headers: {
                 "Content-Type": "application/json",
@@ -96,6 +96,7 @@ export default async function auth(req, res) {
             };
             const response = await axios(config);
             const { access, refresh } = response.data;
+            console.log(response.data);
             const { exp } = jwtDecode(access);
 
             setCookie("refreshToken", refresh, {
@@ -107,9 +108,12 @@ export default async function auth(req, res) {
               path: "/",
             });
 
+            const decodedToken = jwtDecode(access);
+
             return {
               accessToken: access,
               accessTokenExpires: exp, // Here, save the expiration time for the access token.
+              ...decodedToken,
             };
           } catch (error) {
             console.error("Login failed:", error);
@@ -121,15 +125,34 @@ export default async function auth(req, res) {
 
     callbacks: {
       async jwt({ token, user, account, profile, trigger, session }) {
+        const {
+          exp,
+          username,
+          email,
+          first_name,
+          last_name,
+          image,
+          gender,
+          phone,
+          role,
+        } = jwtDecode(user?.accessToken || token?.accessToken);
+
         if (user) {
           return {
+            username,
+            email,
+            first_name,
+            last_name,
+            image,
+            gender,
+            phone,
+            role,
+            accessTokenExpires: exp,
             accessToken: user.accessToken,
-            accessTokenExpires: user.accessTokenExpires,
-            role: "admin",
           };
         }
 
-        const { exp } = jwtDecode(token.accessToken); // Use non-null assertion for accessToken.
+        // console.log(jwtDecode(token.accessToken));
 
         if (moment().unix() < exp) {
           return token; // The token is still valid.
@@ -145,6 +168,7 @@ export default async function auth(req, res) {
       async session({ session, token }) {
         if (!token?.accessToken) session.user = null;
         else session.user = token;
+        console.log(session);
 
         return session;
       },

@@ -1,78 +1,106 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
-// Define the paths that require authentication
-const protectedRoutes = ["/admin", "/dashboard", "/list"];
-
-export default function middleware(req: NextRequest) {
-  const url = req.nextUrl.clone();
-  const pathname = url.pathname;
-
-  // Check if the request is for a protected route
-  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
-    const isLoggedIn = req.cookies.get("isLoggedIn")?.value;
-
-    // Redirect to login if not logged in
-    if (!isLoggedIn || isLoggedIn !== "true") {
-      url.pathname = "/login"; // Redirect to login page
-      return NextResponse.redirect(url);
-    }
-  }
-
-  return NextResponse.next(); // Allow access if the user is logged in
-}
-
-// Specify the routes where the middleware should be applied
-export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/student/:path*"],
-};
-
-// import withAuth from "next-auth/middleware";
-// import { NextRequest, NextResponse } from "next/server";
+// import { NextResponse } from "next/server";
+// import type { NextRequest } from "next/server";
 
 // // Define the paths that require authentication
-// const protectedRoutes = ["/mentor", "/dashboard", "/student"];
+// const protectedRoutes = ["/admin", "/dashboard", "/list"];
 
-// export default withAuth(
-//   // `withAuth` augments your `Request` with the user's token.
-//   function middleware(req) {
-//     console.log("token: ", req.nextauth.token);
+// export default function middleware(req: NextRequest) {
+//   const url = req.nextUrl.clone();
+//   const pathname = url.pathname;
 
-//     if (
-//       req.nextUrl.pathname.startsWith("/admin") &&
-//       req.nextauth.token?.role !== "admin"
-//     )
-//       return NextResponse.rewrite(
-//         new URL("/login?message=You Are Not Authorized!", req.url)
-//       );
-//     if (
-//       req.nextUrl.pathname.startsWith("/user") &&
-//       req.nextauth.token?.role !== "user"
-//     )
-//       return NextResponse.rewrite(
-//         new URL("/login?message=You Are Not Authorized!", req.url)
-//       );
-//   },
-//   {
-//     callbacks: {
-//       authorized: ({ token }) => {
-//         console.log(token, "token");
-//         return !!token;
-//       },
-//     },
+//   // Check if the request is for a protected route
+//   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+//     const isLoggedIn = req.cookies.get("isLoggedIn")?.value;
+
+//     // Redirect to login if not logged in
+//     if (!isLoggedIn || isLoggedIn !== "true") {
+//       url.pathname = "/login"; // Redirect to login page
+//       return NextResponse.redirect(url);
+//     }
 //   }
-// );
 
-// export const config = {
-//   matcher: [
-//     "/admin/:path*",
-//     "/dashboard/:path*",
-//     "/list/:path*",
-//     "/user/:path*",
-//   ],
-// };
+//   return NextResponse.next(); // Allow access if the user is logged in
+// }
 
-// // Configure matcher to exclude specified paths
-// export const config = {
-//   matcher: ["/((?!admin|user).*)"], // This pattern matches everything except /admin/* and /user/*
-// };
+import withAuth from "next-auth/middleware";
+import { NextRequest, NextResponse } from "next/server";
+
+// Define role-based access paths
+const rolePaths = {
+  admin: "/admin",
+  student: "/student",
+  parent: "/parent",
+  teacher: "/teacher",
+};
+
+// Middleware to handle role-based access
+export default withAuth(
+  function middleware(req) {
+    const token = req.nextauth.token;
+    console.log(token);
+
+    if (!token) {
+      return NextResponse.redirect(
+        new URL("/login?message=You must log in!", req.url)
+      );
+    }
+
+    // Role-based path checks
+    if (
+      req.nextUrl.pathname.startsWith(rolePaths.admin) &&
+      token.role !== "admin"
+    ) {
+      return NextResponse.redirect(
+        new URL("/login?message=Admin access required!", req.url)
+      );
+    }
+
+    if (
+      req.nextUrl.pathname.startsWith(rolePaths.student) &&
+      token.role !== "student"
+    ) {
+      return NextResponse.redirect(
+        new URL("/login?message=Student access required!", req.url)
+      );
+    }
+
+    if (
+      req.nextUrl.pathname.startsWith(rolePaths.parent) &&
+      token.role !== "parent"
+    ) {
+      return NextResponse.redirect(
+        new URL("/login?message=Parent access required!", req.url)
+      );
+    }
+
+    if (
+      req.nextUrl.pathname.startsWith(rolePaths.teacher) &&
+      token.role !== "teacher"
+    ) {
+      return NextResponse.redirect(
+        new URL("/login?message=Teacher access required!", req.url)
+      );
+    }
+
+    return NextResponse.next(); // Allow access if role matches
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => {
+        // User must have a valid token to proceed
+        return !!token;
+      },
+    },
+  }
+);
+
+// Matcher configuration for the protected routes
+export const config = {
+  matcher: [
+    "/admin/:path*",
+    "/student/:path*",
+    "/parent/:path*",
+    "/teacher/:path*",
+    "/list/:path*", // Add additional protected paths as needed
+  ],
+};

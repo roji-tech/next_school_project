@@ -83,7 +83,7 @@ const authOptions = (req, res) => ({
 
         try {
           const config = {
-            url: `http://127.0.0.1:8000/api/v1/auth/token/`,
+            url: `http://127.0.0.1:8000/api/v1/auth/login/`,
             method: "post",
             headers: {
               "Content-Type": "application/json",

@@ -14,12 +14,19 @@ const LoginPage = ({ searchParams }: IProps) => {
   const pass = useRef("");
 
   const onSubmit = async () => {
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email: email.current,
       password: pass.current,
-      redirect: true,
-      callbackUrl: "/",
+      redirect: false,
     });
+
+    if (result?.error) {
+      console.error("Login error:", result.error);
+      // Handle the error, e.g., show a message to the user
+    } else {
+      // Redirect to the callback URL or handle successful login
+      window.location.href = "/";
+    }
   };
 
   return (

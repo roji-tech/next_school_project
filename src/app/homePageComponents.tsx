@@ -129,7 +129,7 @@ const CallToAction = () => {
         Ready to Transform Your School?
       </h2>
       <a
-        href="/signup"
+        href="/register"
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full"
       >
         Get Started

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { setCookie } from "@/lib/utils";
+import { signIn } from "next-auth/react";
 
 // Define type for login form data
 type LoginFormInputs = {
@@ -14,6 +15,7 @@ type LoginFormInputs = {
 
 export function LoginComponent() {
   const [loading, setLoading] = useState(false); // State to manage loading status
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // State to manage error message
   const router = useRouter(); // Initialize useRouter for navigation
 
   const {
@@ -25,18 +27,39 @@ export function LoginComponent() {
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     console.log("Login Form Submitted: ", data);
     setLoading(true); // Start loading
-    try {
-      console.log("Form Data Submitted: ", data);
-      // sessionStorage.setItem("isLoggedIn", "true"); // Set isLoggedIn in session storage
-      setCookie("isLoggedIn", "true", 1); // Set the isLoggedIn cookie (expires in 1 day)
+    setErrorMessage(null); // Reset error message
 
-      // Simulate an API call delay
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Remove this in production
-      router.push("/admin"); // Redirect to dashboard after registration
+    // try {
+    //   console.log("Form Data Submitted: ", data);
+    //   // sessionStorage.setItem("isLoggedIn", "true"); // Set isLoggedIn in session storage
+    //   setCookie("isLoggedIn", "true", 1); // Set the isLoggedIn cookie (expires in 1 day)
+
+    //   // Simulate an API call delay
+    //   await new Promise((resolve) => setTimeout(resolve, 2000)); // Remove this in production
+    //   router.push("/admin"); // Redirect to dashboard after registration
+    // } catch (error) {
+    //   console.error("Registration failed", error);
+    // } finally {
+    //   setLoading(false); // Stop loading
+    // }
+
+    try {
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false, // Prevent automatic redirect for error handling
+      });
+
+      if (result?.error) {
+        setErrorMessage(result.error); // Set the error message if login fails
+      } else {
+        router.push("/dashboard"); // Redirect to the homepage or desired route on success
+      }
     } catch (error) {
-      console.error("Registration failed", error);
+      console.error("Login failed:", error);
+      setErrorMessage("An unexpected error occurred.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); // End loading state regardless of success or error
     }
   };
 
@@ -56,7 +79,15 @@ export function LoginComponent() {
           </Link>
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {errorMessage && (
+          <p className="text-red-500 text-sm mb-4">{errorMessage}</p> // Display error message
+        )}
+
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4"
+          method="post"
+        >
           {/* Email */}
           <div>
             <input

@@ -12,7 +12,7 @@ export default function AuthPage({
     <div className="flex flex-col justify-between min-h-screen">
       <LanndingPageHeader />
 
-      <div className="w-full lg:grid lg:min-h-[calc(100vh-90px)] lg:grid-cols-[1fr_1.1fr]">
+      <div className="w-full lg:grid lg:min-h-[calc(100vh-80px)] lg:grid-cols-[1fr_1.1fr] text-black">
         <div
           className="bg-slate-700 flex flex-1 items-center justify-center bg-no-repeat max-lg:fixed max-lg:inset-0 max-lg:-bottom-4 max-lg:-z-10 filter brightness-75"
           style={{
@@ -24,7 +24,7 @@ export default function AuthPage({
           }}
         />
 
-        <div className="flex items-center justify-center p-6 bg-secondary-600 max-lg:min-h-[calc(100vh-90px)] max-lg:backdrop-brightness-75">
+        <div className="flex items-center justify-center p-6 bg-secondary-600 max-lg:min-h-[calc(100vh-80px)] max-lg:backdrop-brightness-75">
           {children}
         </div>
       </div>
