@@ -73,7 +73,7 @@ export function LoginComponent() {
       <div className="w-full max-w-md bg-white p-8 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Sign In</h2>
         <p className="text-sm mb-6">
-          You don't have an account?{" "}
+          You don`&apos;`t have an account?{" "}
           <Link href="/register" className="text-blue-500 underline">
             Register
           </Link>
