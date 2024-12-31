@@ -137,11 +137,12 @@ export default async function auth(req, res) {
               image,
               gender,
               phone,
-              role: role === "owner" ? "admin" : role, // Return "admin" if role is "owner"
+              role: role === "owner" ? "admin" : role,
             };
           } catch (error) {
-            console.error("Login failed:", error);
-            return null;
+            // console.error("Login failed:", error.response);
+            // console.error("Login failed:", error.request);
+            throw error;
           }
         },
       }),

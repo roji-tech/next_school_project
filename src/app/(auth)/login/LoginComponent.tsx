@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { setCookie } from "@/lib/utils";
 import { signIn } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 // Define type for login form data
 type LoginFormInputs = {
@@ -15,7 +16,6 @@ type LoginFormInputs = {
 
 export function LoginComponent() {
   const [loading, setLoading] = useState(false); // State to manage loading status
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // State to manage error message
   const router = useRouter(); // Initialize useRouter for navigation
 
   const {
@@ -25,23 +25,8 @@ export function LoginComponent() {
   } = useForm<LoginFormInputs>();
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    console.log("Login Form Submitted: ", data);
+    // console.log("Login Form Submitted: ", data);
     setLoading(true); // Start loading
-    setErrorMessage(null); // Reset error message
-
-    // try {
-    //   console.log("Form Data Submitted: ", data);
-    //   // sessionStorage.setItem("isLoggedIn", "true"); // Set isLoggedIn in session storage
-    //   setCookie("isLoggedIn", "true", 1); // Set the isLoggedIn cookie (expires in 1 day)
-
-    //   // Simulate an API call delay
-    //   await new Promise((resolve) => setTimeout(resolve, 2000)); // Remove this in production
-    //   router.push("/admin"); // Redirect to dashboard after registration
-    // } catch (error) {
-    //   console.error("Registration failed", error);
-    // } finally {
-    //   setLoading(false); // Stop loading
-    // }
 
     try {
       const result = await signIn("credentials", {
@@ -51,13 +36,20 @@ export function LoginComponent() {
       });
 
       if (result?.error) {
-        setErrorMessage(result.error); // Set the error message if login fails
+        console.log(result.error);
+        if (result.error.includes("ECONNREFUSED")) {
+          toast.error("Server not available, try again later");
+        } else if (result.error.includes("401")) {
+          toast.error("Invalid username or password");
+        } else {
+          toast.error(result.error); // Set the error message if login fails
+        }
       } else {
         router.push("/dashboard"); // Redirect to the homepage or desired route on success
       }
     } catch (error) {
-      console.error("Login failed:", error);
-      setErrorMessage("An unexpected error occurred.");
+      console.warn("Login failed:", error);
+      toast.error("An unexpected error occurred.");
     } finally {
       setLoading(false); // End loading state regardless of success or error
     }
@@ -79,9 +71,9 @@ export function LoginComponent() {
           </Link>
         </p>
 
-        {errorMessage && (
+        {/* {errorMessage && (
           <p className="text-red-500 text-sm mb-4">{errorMessage}</p> // Display error message
-        )}
+        )} */}
 
         <form
           onSubmit={handleSubmit(onSubmit)}

@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 // Define type for signup form data
 type SignupFormInputs = {
@@ -160,6 +161,13 @@ export default function RegisterComponent() {
     <div className="flex items-center justify-center">
       <div className="w-full max-w-lg bg-white p-8 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Create an account</h2>
+        <p className="text-sm mb-6">
+          You don`&apos;`t have an account?{" "}
+          <Link href="/register" className="text-blue-500 underline">
+            Register
+          </Link>
+        </p>
+
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4"
