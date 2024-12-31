@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import { useForm, SubmitHandler } from "react-hook-form";
-import { setCookie } from "@/lib/utils";
 import axios from "axios";
 import { signIn } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 // Define type for signup form data
 type SignupFormInputs = {
@@ -50,7 +50,7 @@ export default function RegisterComponent() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/register/",
+        "http://localhost:8000/api/v1/auth/users/",
         payload,
         {
           headers: {
@@ -70,28 +70,82 @@ export default function RegisterComponent() {
         });
 
         if (signInResponse?.ok) {
-          alert(result.message); // Show success message
+          toast.success(result.message); // Show success message
           router.push("/admin"); // Redirect to admin dashboard
         } else {
-          alert("Sign in failed. Please try again.");
+          toast.error("Sign in failed. Please try again.");
         }
       } else {
-        alert(result.message); // Show error message
+        toast.error(result.message); // Show error message
       }
     } catch (error: any) {
-      if (error.response) {
+      console.warn("Error response:", error.response);
+      if (error?.response) {
+        if (error?.response?.status == 500) {
+          return toast.error("Server Error, please try gain later");
+        }
         // Server responded with a status other than 200 range
-        console.error("Error response:", error.response.data);
-        alert(`Error: ${error.response.data.message || "Registration failed"}`);
+        const errorMessage = error.response.data;
+        if (typeof errorMessage === "object") {
+          Object.values(errorMessage).forEach((msgArray: any) => {
+            try {
+              let msgs;
+              console.log(typeof msgArray, Object.values(msgArray));
+              console.log(Object.keys(msgArray));
+
+              // try {
+              //   msgs = JSON.parse(msgArray);
+              //   console.log(Array.isArray(msgs));
+              // } catch (error) {
+              // }
+
+              console.warn("Error parsing error message:", error.response.data);
+
+              if (Array.isArray(msgArray)) {
+                msgArray.forEach((msg: string) => {
+                  console.log(msg, "array");
+                  toast.error(msg?.replace(/^\['|'\]$/g, ""));
+                });
+              } else if (typeof msgs === "string") {
+                msgs = msgArray?.replace(/^\['|'\]$/g, "");
+                toast.error(msgs);
+              } else if (typeof msgs === "object") {
+                Object.values(msgArray).forEach((msg: any) => {
+                  console.log(msg);
+                  toast.error(msg?.replace(/^\['|'\]$/g, ""));
+                });
+              } else {
+                console.warn("Unexpected error format found:", msgs, msgArray);
+                toast.error("Error: " + msgArray);
+              }
+            } catch (error) {
+              console.warn("Error parsing error message:", error);
+              toast.error(
+                "An error occurred while processing the error message."
+              );
+            }
+          });
+        } else {
+          toast.error(errorMessage);
+        }
+      } else if (error.message && error.message.includes("Network Error")) {
+        // Network error occurred
+        console.error("Network error:", error.message);
+        toast.error("Network error. Please check your internet connection.");
       } else if (error.request) {
         // Request was made but no response received
         console.error("Error request:", error.request);
-        alert("No response from server. Please try again later.");
+        toast.error("No response from server. Please try again later.");
       } else {
         // Something else happened while setting up the request
         console.error("Error message:", error.message);
-        alert("An error occurred. Please try again.");
+        toast.error("An error occurred. Please try again.");
       }
+      // if (axios.isAxiosError(error)) {
+      // } else {
+      //   console.error("Unexpected error:", error);
+      //   toast.error("An unexpected error occurred. Please try again.");
+      // }
     } finally {
       setLoading(false);
     }
@@ -121,6 +175,11 @@ export default function RegisterComponent() {
                 })}
                 className={formStyles(errors.firstName)}
               />
+              {errors.firstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.firstName.message}
+                </p>
+              )}
             </div>
             <div className="w-1/2">
               <input
@@ -129,6 +188,11 @@ export default function RegisterComponent() {
                 {...register("lastName", { required: "Last name is required" })}
                 className={formStyles(errors.lastName)}
               />
+              {errors.lastName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.lastName.message}
+                </p>
+              )}
             </div>
           </div>
           <input
@@ -136,13 +200,12 @@ export default function RegisterComponent() {
             placeholder="Email Address"
             {...register("email", {
               required: "Email is required",
-              // pattern: {
-              //   value: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/,
-              //   message: "Invalid email format",
-              // },
             })}
             className={formStyles(errors.email)}
           />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )}
           <select
             {...register("gender", { required: "Gender is required" })}
             className={formStyles(errors.gender)}
@@ -151,12 +214,20 @@ export default function RegisterComponent() {
             <option value="M">Male</option>
             <option value="F">Female</option>
           </select>
+          {errors.gender && (
+            <p className="text-red-500 text-xs mt-1">{errors.gender.message}</p>
+          )}
           <input
             type="text"
             placeholder="School Name"
             {...register("schoolName", { required: "School name is required" })}
             className={formStyles(errors.schoolName)}
           />
+          {errors.schoolName && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.schoolName.message}
+            </p>
+          )}
           <input
             type="text"
             placeholder="School Phone"
@@ -165,6 +236,11 @@ export default function RegisterComponent() {
             })}
             className={formStyles(errors.schoolPhone)}
           />
+          {errors.schoolPhone && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.schoolPhone.message}
+            </p>
+          )}
           <input
             type="email"
             placeholder="School Email"
@@ -173,6 +249,11 @@ export default function RegisterComponent() {
             })}
             className={formStyles(errors.schoolEmail)}
           />
+          {errors.schoolEmail && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.schoolEmail.message}
+            </p>
+          )}
           <input
             type="text"
             placeholder="School Address"
@@ -181,14 +262,30 @@ export default function RegisterComponent() {
             })}
             className={formStyles(errors.schoolAddress)}
           />
+          {errors.schoolAddress && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.schoolAddress.message}
+            </p>
+          )}
           <div className="flex space-x-4">
             <div className="w-1/2">
               <input
                 type="password"
                 placeholder="Password"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters",
+                  },
+                })}
                 className={formStyles(errors.password)}
               />
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
             <div className="w-1/2">
               <input
@@ -200,6 +297,11 @@ export default function RegisterComponent() {
                 })}
                 className={formStyles(errors.confirmPassword)}
               />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
           </div>
           <button

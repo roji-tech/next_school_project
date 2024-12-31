@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { UserType } from "@/types/intefaces";
 
 export default function DashboardLayout({
   children,
@@ -13,7 +14,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const { data: session, status } = useSession() as {
-    data: { user: { schoolLogo?: string } } | null;
+    data: { user: UserType } | null;
     status: string;
   };
 
@@ -50,18 +51,37 @@ export default function DashboardLayout({
       {/* LEFT */}
       <div className="w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] p-4 max-sm:hidden">
         <Link
-          href="/"
+          href="/dashboard"
           className="flex items-center justify-center lg:justify-start gap-2"
         >
-          <Image src="/logo.png" alt="logo" width={32} height={32} />
-          <span className="hidden lg:block font-bold">School Mgmt</span>
+          {session?.user?.schoolLogo ? (
+            <img
+              src={String(session.user.schoolLogo)}
+              alt="LOGO"
+              width={32}
+              height={32}
+              onError={(e) => {
+                e.currentTarget.src = "/logo.png";
+              }}
+            />
+          ) : (
+            <img src="/logo.png" alt="LOGO" width={32} height={32} />
+          )}
+
+          <span className="hidden lg:block font-bold">
+            {String(
+              session?.user?.schoolShortName ||
+                session?.user?.schoolName ||
+                "School Mgmt"
+            )}{" "}
+          </span>
         </Link>
         <Menu />
       </div>
 
       {/* RIGHT */}
       <div className="w-[86%] max-w-full overflow-x-hidden md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-scroll flex flex-col max-sm:w-full">
-        {/* <MobileMenu /> */}
+        <MobileMenu />
         <Navbar />
         {children}
       </div>

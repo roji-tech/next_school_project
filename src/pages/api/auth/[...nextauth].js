@@ -108,6 +108,9 @@ export default async function auth(req, res) {
               gender,
               phone,
               role,
+              school_logo,
+              school_name,
+              school_short_name,
             } = jwtDecode(access);
 
             setCookie("refreshToken", refresh, {
@@ -128,10 +131,13 @@ export default async function auth(req, res) {
               fullName: `${first_name} ${last_name}`,
               firstName: first_name,
               lastName: last_name,
+              schoolLogo: school_logo,
+              schoolName: school_name,
+              schoolShortName: school_short_name,
               image,
               gender,
               phone,
-              role,
+              role: role === "owner" ? "admin" : role, // Return "admin" if role is "owner"
             };
           } catch (error) {
             console.error("Login failed:", error);

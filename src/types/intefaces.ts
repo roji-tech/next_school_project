@@ -1,4 +1,4 @@
-export interface User {
+export interface UserType {
   fullName?: string | null | undefined;
   firstName?: string | null | undefined;
   lastName?: string | null | undefined;
@@ -11,6 +11,8 @@ export interface User {
   phone?: string;
   accessTokenExpires?: number;
   schoolLogo?: string;
+  schoolName?: string;
+  schoolShortName?: string;
   // refreshTOken?: string;
 }
 

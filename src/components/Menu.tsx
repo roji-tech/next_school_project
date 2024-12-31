@@ -110,7 +110,7 @@ export const menuItems = [
       {
         icon: "/logout.png",
         label: "Logout",
-        href: "/logout",
+        href: "/login",
         visible: ["admin", "teacher", "student", "parent"],
       },
     ],
