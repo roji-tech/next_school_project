@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"; // Import Next.js response handling
 import { setCookie, getCookie } from "cookies-next"; // Library for managing cookies in Next.js
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { API_URL } from "../../../../../config";
 
 // Define the expected structure of the request body
 interface RefreshTokenRequest {
@@ -39,7 +40,7 @@ export async function POST(req: any) {
 
     // Make the API call to refresh the token
     const response = await axios.post<RefreshTokenResponse>(
-      "http://127.0.0.1:8000/api/v1/auth/token/refresh/",
+      `${API_URL}/auth/token/refresh/`,
       { refresh: token }
     );
 

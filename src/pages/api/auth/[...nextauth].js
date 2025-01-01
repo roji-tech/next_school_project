@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { setCookie, getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import moment from "moment";
+import { API_URL } from "../../../../config";
 
 // interface Token {
 //   accessToken?: string;
@@ -25,7 +26,7 @@ async function refreshAccessToken(token, req, res) {
     }
 
     const config = {
-      url: `http://127.0.0.1:8000/api/v1/auth/token/refresh/`,
+      url: `${API_URL}/auth/token/refresh/`,
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -87,10 +88,10 @@ export default async function auth(req, res) {
 
           try {
             const config = {
-              url: `http://127.0.0.1:8000/api/v1/auth/login/`,
+              url: `${API_URL}/auth/login/`,
               method: "post",
               headers: {
-                "Content-Type": "application/json",
+              "Content-Type": "application/json",
               },
               data: { email, password },
             };

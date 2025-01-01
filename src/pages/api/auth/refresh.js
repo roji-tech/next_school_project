@@ -1,6 +1,7 @@
 import { setCookie, getCookie } from "cookies-next"; // Library for managing cookies in Next.js
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { API_URL } from "../../../../config";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -14,12 +15,9 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: "Refresh token not found" });
     }
 
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/auth/token/refresh/",
-      {
-        refresh: refreshToken,
-      }
-    );
+    const response = await axios.post(`${API_URL}/auth/token/refresh/`, {
+      refresh: refreshToken,
+    });
 
     const data = response.data;
 

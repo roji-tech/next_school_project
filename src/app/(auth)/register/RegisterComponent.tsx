@@ -7,6 +7,7 @@ import axios from "axios";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { API_URL } from "../../../../config";
 
 // Define type for signup form data
 type SignupFormInputs = {
@@ -50,15 +51,11 @@ export default function RegisterComponent() {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/users/",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(`${API_URL}/auth/users/`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const result = response.data;
 
