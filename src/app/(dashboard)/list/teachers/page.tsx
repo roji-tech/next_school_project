@@ -1,13 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { teachersData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import axiosInstance from "@/utils/axiosInstance";
 
 type Teacher = {
   id: number;
@@ -32,7 +33,7 @@ const columns = [
     className: "hidden md:table-cell",
   },
   {
-    header: "Subjects",
+    header: "Department",
     accessor: "subjects",
     className: "hidden md:table-cell",
   },
@@ -60,6 +61,36 @@ const columns = [
 const TeacherListPage = () => {
   const { data: session } = useSession();
   const role = session?.user?.role || "guest";
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      try {
+        const response = await axiosInstance.get("/teachers/school-teachers/");
+        console.log(response.data);
+        const formattedTeachers = response.data.map((teacher: any) => ({
+          id: teacher.id,
+          teacherId: teacher.user.id.toString(),
+          name: `${teacher.user.first_name} ${teacher.user.last_name}`,
+          email: teacher.user.email,
+          photo: teacher.user.image || "/avatar.png",
+          phone: teacher.user.phone,
+          subjects: [teacher.department, ""],
+          classes: [], // Assuming classes data is not available in the response
+          address: "", // Assuming address data is not available in the response
+        }));
+        setTeachers(formattedTeachers);
+      } catch (error: any) {
+        console.warn("Error fetching teachers:", error);
+        console.warn("Error fetching teachers:", error?.response);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTeachers();
+  }, []);
 
   const renderRow = (item: Teacher) => (
     <tr
@@ -70,8 +101,8 @@ const TeacherListPage = () => {
         <Image
           src={item.photo}
           alt=""
-          width={40}
-          height={40}
+          width={30}
+          height={30}
           className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
         />
         <div className="flex flex-col">
@@ -80,8 +111,8 @@ const TeacherListPage = () => {
         </div>
       </td>
       <td className="hidden md:table-cell">{item.teacherId}</td>
-      <td className="hidden md:table-cell">{item.subjects.join(",")}</td>
-      <td className="hidden md:table-cell">{item.classes.join(",")}</td>
+      <td className="hidden md:table-cell">{item.subjects?.join(",")}</td>
+      <td className="hidden md:table-cell">{item.classes?.join(",")}</td>
       <td className="hidden md:table-cell">{item.phone}</td>
       <td className="hidden md:table-cell">{item.address}</td>
       <td>
@@ -93,9 +124,6 @@ const TeacherListPage = () => {
           </Link>
           {role === "admin" && (
             <>
-              {/* <button className="w-7 h-7 flex items-center justify-center rounded-full bg-schPurple">
-                <Image src="/delete.png" alt="" width={16} height={16} />
-              </button> */}
               <FormModal table="teacher" type="delete" id={item.id} />
             </>
           )}
@@ -106,7 +134,6 @@ const TeacherListPage = () => {
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">All Teachers</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
@@ -127,10 +154,16 @@ const TeacherListPage = () => {
           </div>
         </div>
       </div>
-      {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={teachersData} />
-      {/* PAGINATION */}
-      <Pagination />
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <p>Loading...</p>
+        </div>
+      ) : (
+        <div className="max-h-[75vh] lg:max-h-[78vh] mt-3 overflow-y-auto">
+          <Table columns={columns} renderRow={renderRow} data={teachers} />
+        </div>
+      )}
+      {/* <Pagination /> */}
     </div>
   );
 };

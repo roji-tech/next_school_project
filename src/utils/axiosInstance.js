@@ -3,11 +3,24 @@ import { getSession, signOut } from "next-auth/react";
 import { handleSignOut, updateSessionWithToken } from "./authHelpers";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000", // Base URL for your API
+  baseURL:
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api/v1", // Base URL for your API
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 5000, // Set timeout to 5 seconds
   // withCredentials: true, // Include cookies in requests
+});
+
+axiosInstance.interceptors.request.use(async (config) => {
+  const session = await getSession();
+  const sessionAccessToken = session?.user?.accessToken;
+
+  if (sessionAccessToken) {
+    config.headers["Authorization"] = `Bearer ${sessionAccessToken}`;
+  }
+
+  return config;
 });
 
 let isRefreshing = false; // To avoid multiple refresh calls

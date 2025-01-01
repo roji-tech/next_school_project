@@ -20,11 +20,21 @@ const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
 });
 
 const forms: {
-  [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
+  [key: string]: (
+    type: "create" | "update",
+    data?: any,
+    callback?: Function | null | undefined
+  ) => JSX.Element;
 } = {
-  teacher: (type, data) => <TeacherForm type={type} data={data} />,
-  student: (type, data) => <StudentForm type={type} data={data} />,
-  announcement: (type, data) => <AnnouncementForm type={type} data={data} />,
+  teacher: (type, data, callback) => (
+    <TeacherForm type={type} data={data} successFunction={callback} />
+  ),
+  student: (type, data, callback) => (
+    <StudentForm type={type} data={data} successFunction={callback} />
+  ),
+  announcement: (type, data, callback) => (
+    <AnnouncementForm type={type} data={data} successFunction={callback} />
+  ),
 };
 
 const FormModal = ({
@@ -60,6 +70,15 @@ const FormModal = ({
 
   const [open, setOpen] = useState(false);
 
+  const successCallback = (func: Function) => {
+    setOpen(false);
+
+    console.log(func);
+    if (typeof func == "function") {
+      func();
+    }
+  };
+
   const Form = () => {
     return type === "delete" && id ? (
       <form action="" className="p-4 flex flex-col gap-4">
@@ -71,7 +90,7 @@ const FormModal = ({
         </button>
       </form>
     ) : type === "create" || type === "update" ? (
-      forms[table](type, data)
+      forms[table](type, data, successCallback)
     ) : (
       "Form not found!"
     );

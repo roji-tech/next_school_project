@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "../InputField";
 import Image from "next/image";
+import { MyFormProps } from "@/types/intefaces";
 
 const schema = z.object({
   username: z
@@ -27,13 +28,7 @@ const schema = z.object({
 
 type Inputs = z.infer<typeof schema>;
 
-const StudentForm = ({
-  type,
-  data,
-}: {
-  type: "create" | "update";
-  data?: any;
-}) => {
+const AnnouncementForm = ({ type, data, successFunction }: MyFormProps) => {
   const {
     register,
     handleSubmit,
@@ -108,4 +103,4 @@ const StudentForm = ({
   );
 };
 
-export default StudentForm;
+export default AnnouncementForm;

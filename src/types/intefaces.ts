@@ -42,3 +42,9 @@ export interface DecodedToken {
   // is_superuser: boolean;
   // is_staff: boolean;
 }
+
+export type MyFormProps = {
+  type: "create" | "update";
+  data?: any;
+  successFunction?: Function | null | undefined;
+};

@@ -107,10 +107,10 @@ export default function RegisterComponent() {
                   console.log(msg, "array");
                   toast.error(msg?.replace(/^\['|'\]$/g, ""));
                 });
-              } else if (typeof msgs === "string") {
+              } else if (typeof msgArray === "string") {
                 msgs = msgArray?.replace(/^\['|'\]$/g, "");
                 toast.error(msgs);
-              } else if (typeof msgs === "object") {
+              } else if (typeof msgArray === "object") {
                 Object.values(msgArray).forEach((msg: any) => {
                   console.log(msg);
                   toast.error(msg?.replace(/^\['|'\]$/g, ""));
