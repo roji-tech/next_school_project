@@ -98,12 +98,12 @@ const TeacherListPage = () => {
 
   const renderRow = (item: Teacher) => (
     <tr
-      key={item.id}
+      key={item?.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-schPurpleLight"
     >
       <td className="flex items-center gap-4 p-4">
         <Image
-          src={item.photo}
+          src={item?.photo}
           alt=""
           width={30}
           height={30}
@@ -114,11 +114,11 @@ const TeacherListPage = () => {
           <p className="text-xs text-gray-500">{item?.email}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item.teacherId}</td>
-      <td className="hidden md:table-cell">{item.subjects?.join(",")}</td>
-      <td className="hidden md:table-cell">{item.classes?.join(",")}</td>
-      <td className="hidden md:table-cell">{item.phone}</td>
-      <td className="hidden md:table-cell">{item.address}</td>
+      <td className="hidden md:table-cell">{item?.teacherId}</td>
+      <td className="hidden md:table-cell">{item?.subjects?.join(",")}</td>
+      <td className="hidden md:table-cell">{item?.classes?.join(",")}</td>
+      <td className="hidden md:table-cell">{item?.phone}</td>
+      <td className="hidden md:table-cell">{item?.address}</td>
       <td>
         <div className="flex items-center gap-2">
           <Link title="View" href={`/list/teachers/${item.id}`}>
@@ -133,7 +133,7 @@ const TeacherListPage = () => {
                 type="delete"
                 id={item.id}
                 callback={fetchTeachers}
-                moreTnfo={`( ${item.name} )`}
+                moreTnfo={`( ${item?.name} )`}
               />
             </>
           )}

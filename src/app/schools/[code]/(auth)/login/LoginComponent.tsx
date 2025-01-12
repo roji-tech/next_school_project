@@ -4,10 +4,25 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
-import { getActualPath, setCookie } from "@/lib/utils";
+import { getActualPath, getApiUrl, setCookie } from "@/lib/utils";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import { BASE_URL } from "../../../../../../config";
+import axios from "axios";
 
+interface SchoolInfo {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  logo: string;
+  short_name: string;
+  code: string;
+  website: string | null;
+  motto: string;
+  about: string;
+}
 // Define type for login form data
 type LoginFormInputs = {
   email: string;
@@ -17,6 +32,7 @@ type LoginFormInputs = {
 export function LoginComponent() {
   const [loading, setLoading] = useState(false); // State to manage loading status
   const router = useRouter(); // Initialize useRouter for navigation
+  const [schoolInfo, setSchoolInfo] = useState<SchoolInfo | null>(null);
 
   const {
     register,
@@ -60,17 +76,55 @@ export function LoginComponent() {
       condition ? "border-red-500" : "border-none"
     } bg-[#FAF7EE] ${otherStyles} `;
 
+  useEffect(() => {
+    const fetchSchoolInfo = async () => {
+      const url = `${BASE_URL}${getApiUrl("/school_info/")}`;
+      try {
+        const response = await axios.get(url);
+        console.log(response.data);
+        setSchoolInfo(response.data);
+      } catch (error) {
+        console.warn("Error fetching school info:", error);
+        router.push("/schools");
+      }
+    };
 
-    useEffect(() => {
-      
-    
-     
-    }, [])
-    
+    fetchSchoolInfo();
+  }, []);
 
   return (
     <div className="flex items-center justify-center bg-gray-100 max-w-[583px]">
       <div className="w-full max-w-md bg-white p-8 rounded-lg">
+        {schoolInfo && (
+          <div className="mb-6 p-4 flex flex-col items-center">
+            {schoolInfo?.logo ? (
+              <img
+                src={String(schoolInfo?.logo)}
+                alt="LOGO"
+                width={60}
+                height={60}
+                onError={(e) => {
+                  e.currentTarget.src = "/logo.png";
+                }}
+              />
+            ) : (
+              <img src="/logo.png" alt="LOGO" width={60} height={60} />
+            )}
+            <h3 className="mt-2 text-xl font-semibold">{schoolInfo.name}</h3>
+            <small>
+              <i>{schoolInfo.motto || "educate for life"}</i>
+            </small>
+            <small>
+              <b>{schoolInfo.email || "no-email.sch.com"}</b>
+            </small>
+            {/* <strong>Address:</strong> {schoolInfo.address} */}
+            {/* <strong>Email:</strong>  */}
+            {/* <strong>Website:</strong> {schoolInfo.website || "N/A"} */}
+            {/* <strong>Phone:</strong> {schoolInfo.phone}
+            <strong>About:</strong> {schoolInfo.about} */}
+          </div>
+        )}
+
         <h2 className="text-2xl font-bold mb-4">Sign In</h2>
         <p className="text-sm mb-6">
           You don`&apos;`t have an account?{" "}

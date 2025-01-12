@@ -11,14 +11,13 @@ import { CircleUserRound } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/compat/router";
 import { MyFormProps } from "@/types/intefaces";
-import { get } from "http";
 import { getApiUrl } from "@/lib/utils";
 
 const schema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Username must be at least 3 characters long!" })
-    .max(20, { message: "Username must be at most 20 characters long!" }),
+  // username: z
+  //   .string()
+  //   .min(3, { message: "Username must be at least 3 characters long!" })
+  //   .max(20, { message: "Username must be at most 20 characters long!" }),
   email: z.string().email({ message: "Invalid email address!" }),
   password: z
     .string()
@@ -60,20 +59,9 @@ const TeacherForm = ({ type, data, successFunction }: MyFormProps) => {
     }
   };
 
-  const goToPage = async () => {
-    if (
-      (router && router?.asPath === "/list/teachers") ||
-      globalThis?.location?.pathname === "/list/teachers"
-    ) {
-      globalThis?.location?.reload();
-    } else {
-      await router?.push("/list/teachers");
-    }
-  };
-
   const onSubmit = handleSubmit(async (formData) => {
     const requestData = new FormData();
-    requestData.append("user.username", formData.username);
+    // requestData.append("user.username", formData.username);
     requestData.append("user.email", formData.email);
     if (type === "create") {
       requestData.append("user.password", formData.password!); // Only include password on creation
@@ -81,8 +69,15 @@ const TeacherForm = ({ type, data, successFunction }: MyFormProps) => {
     requestData.append("user.first_name", formData.firstName);
     requestData.append("user.last_name", formData.lastName);
     requestData.append("user.phone", formData.phone || "");
-    requestData.append("department", formData.department);
     requestData.append("user.gender", formData.gender);
+    requestData.append("department", formData.department);
+
+
+    // class Meta:
+    // model = Student
+    // fields = ['user', 'reg_no', 'school', 'session_admitted',
+    //           "date_of_birth", 'student_class']
+
 
     if (
       formData?.image &&
@@ -115,10 +110,7 @@ const TeacherForm = ({ type, data, successFunction }: MyFormProps) => {
       );
 
       if (successFunction) {
-        goToPage();
         successFunction();
-      } else {
-        goToPage();
       }
     } catch (error: any) {
       console.error("Error:", error);
@@ -202,13 +194,13 @@ const TeacherForm = ({ type, data, successFunction }: MyFormProps) => {
         Authentication Information
       </span>
       <div className="flex justify-between flex-wrap gap-4">
-        <InputField
+        {/* <InputField
           label="Username"
           name="username"
           defaultValue={data?.username}
           register={register}
           error={errors?.username}
-        />
+        /> */}
         <InputField
           label="Email"
           name="email"

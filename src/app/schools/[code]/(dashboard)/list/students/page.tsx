@@ -65,17 +65,38 @@ const StudentListPage = () => {
 
   const fetchStudents = async () => {
     try {
-      const url = `${getApiUrl("/students/")}`;
+      // const response = await axiosInstance.get(url, {
+      //   params: { q: searchQuery, page: currentPage },
+      // });
+      // const { results, total_pages } = response.data;
+      // setStudents(results);
+      // setTotalPages(total_pages);
 
       setIsLoading(true);
-      const response = await axiosInstance.get(url, {
-        params: { q: searchQuery, page: currentPage },
-      });
-      const { results, total_pages } = response.data;
-      setStudents(results);
-      setTotalPages(total_pages);
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+      const url = `${getApiUrl("/students/")}`;
+
+      const response = await axiosInstance.get(url);
+      console.log(response.data);
+      console.log(url);
+
+      const formattedStudents = response.data.map((student: any) => ({
+        id: student.id,
+        studentId: student.user.id.toString(),
+        name: `${student.user.first_name} ${student.user.last_name}`,
+        email: student.user.email,
+        photo: student.user.image || "/avatar.png",
+        phone: student.user.phone,
+        department: student.department,
+        className: student.student_class,
+        address: student.user.address || "",
+      }));
+
+      console.log(formattedStudents);
+      setStudents(formattedStudents);
+    } catch (error: any) {
+      setError(error?.message || "Something went wrong.");
+      console.warn("Error fetching teachers:", error);
+      console.warn("Error fetching teachers:", error?.response);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +108,7 @@ const StudentListPage = () => {
 
   const renderRow = (item: Student) => (
     <tr
-      key={item.id}
+      key={`${item.id}+${item.studentId}`}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-schPurpleLight"
     >
       <td className="flex items-center gap-4 p-4">
@@ -154,17 +175,15 @@ const StudentListPage = () => {
       {/* LIST */}
       {isLoading ? (
         <p>Loading...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
       ) : (
         <Table columns={columns} renderRow={renderRow} data={students} />
       )}
       {/* PAGINATION */}
-      <Pagination
+      {/* <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
-      />
+      /> */}
     </div>
   );
 };

@@ -26,6 +26,7 @@ type SignupFormInputs = {
 export default function RegisterComponent() {
   const router = useRouter(); // Initialize useRouter for navigation
   const [loading, setLoading] = useState(false); // State to manage loading status
+  const [schoolInfo, setSchoolInfo] = useState({});
 
   const {
     register,
