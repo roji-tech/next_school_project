@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { setCookie } from "@/lib/utils";
@@ -17,9 +17,6 @@ type LoginFormInputs = {
 export function LoginComponent() {
   const [loading, setLoading] = useState(false); // State to manage loading status
   const router = useRouter(); // Initialize useRouter for navigation
-
-  const params = useParams<{ code: string }>();
-  const schoolCode = params?.code;
 
   const {
     register,
@@ -48,8 +45,7 @@ export function LoginComponent() {
           toast.error(result.error); // Set the error message if login fails
         }
       } else {
-        globalThis.localStorage.setItem("SCHOOL_CODE", schoolCode as string);
-        router.push(`schools/${schoolCode}/dashboard`); // Redirect to the homepage or desired route on success
+        router.push("/dashboard"); // Redirect to the homepage or desired route on success
       }
     } catch (error) {
       console.warn("Login failed:", error);
@@ -63,16 +59,6 @@ export function LoginComponent() {
     `w-full px-4 py-2 border rounded-sm outline outline-none hover:outline-[0.5px] ${
       condition ? "border-red-500" : "border-none"
     } bg-[#FAF7EE] ${otherStyles} `;
-
-  useEffect(() => {
-    const schoolCode = globalThis.localStorage.getItem("SCHOOL_CODE");
-    console.log(schoolCode);
-
-    if (schoolCode) {
-      alert(schoolCode);
-      router.replace(`/schools/${schoolCode}/login`);
-    }
-  }, []);
 
   return (
     <div className="flex items-center justify-center bg-gray-100 max-w-[583px]">

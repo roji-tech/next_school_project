@@ -5,19 +5,35 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { setCookie, getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import moment from "moment";
-import { API_URL } from "../../../../config";
+import { API_URL, BASE_URL } from "../../../../config";
 
-// interface Token {
-//   accessToken?: string;
-//   accessTokenExpires?: number;
-//   refreshToken?: string;
-//   exp?: number;
-// }
+async function getSchoolCode(req, res) {
+  const referer =
+    req.headers.referer ||
+    (await getCookie("next-auth.callback-url", {
+      req,
+      res,
+    }));
+
+  if (!referer) {
+    throw "Referer header is missing";
+  }
+
+  // Match the school code using a regex
+  const match = referer.match(/\/schools\/([^/]+)\/login/);
+
+  const schoolCode = (match && match[1]) ?? null; // Extracted school code
+
+  console.log(referer, match);
+  console.log(`Extracted School Code: ${schoolCode}`);
+  return schoolCode;
+}
 
 async function refreshAccessToken(token, req, res) {
   try {
+    const schoolCode = await getSchoolCode(req, res);
+
     const refreshToken = await getCookie("refreshToken", { req, res });
-    // console.log("\n\n\n\n\n\n\n\n\n\n\n\n", refreshToken);
 
     if (!refreshToken) {
       return res
@@ -26,7 +42,7 @@ async function refreshAccessToken(token, req, res) {
     }
 
     const config = {
-      url: `${API_URL}/auth/token/refresh/`,
+      url: `${BASE_URL}/${schoolCode}/api/v1/auth/token/refresh/`,
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -50,7 +66,6 @@ async function refreshAccessToken(token, req, res) {
       });
     }
 
-    // console.log(data);
     return {
       ...token,
       accessToken: data.access,
@@ -84,11 +99,14 @@ export default async function auth(req, res) {
         },
 
         async authorize(credentials) {
+          // Access the Referer header
+          const schoolCode = await getSchoolCode(req, res);
+
           const { email, password } = credentials;
 
           try {
             const config = {
-              url: `${API_URL}/auth/login/`,
+              url: `${BASE_URL}/${schoolCode}/api/v1/auth/login/`,
               method: "post",
               headers: {
                 "Content-Type": "application/json",

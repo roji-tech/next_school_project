@@ -60,6 +60,8 @@ export default function RegisterComponent() {
       const result = response.data;
 
       if (response.status === 201) {
+        toast.success("School Registered Successfully"); // Show success message
+
         // Registration successful, now sign in using next-auth
         const signInResponse = await signIn("credentials", {
           redirect: false,
@@ -72,6 +74,7 @@ export default function RegisterComponent() {
           router.push("/admin"); // Redirect to admin dashboard
         } else {
           toast.error("Sign in failed. Please try again.");
+          router.push("/login");
         }
       } else {
         toast.error(result.message); // Show error message

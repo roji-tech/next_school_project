@@ -102,7 +102,7 @@
   background-color: #fdf2fb !important;
 }
 
-.rbc-event-label{
+.rbc-event-label {
   color: gray !important;
   margin-bottom: 5px;
 }
@@ -170,4 +170,24 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #35c4f8 #f1f0ff;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f0ff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #00bbff;
+  border-radius: 10px;
+  border: 2px solid #f1f0ff;
 }

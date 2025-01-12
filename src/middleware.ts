@@ -102,6 +102,14 @@ export const config = {
     "/student/:path*",
     "/parent/:path*",
     "/teacher/:path*",
-    "/list/:path*", // Add additional protected paths as needed
+    "/list/:path*",
+
+    // "/schools/:code/:path*",
+    "/schools/:code/dashboard/:path*",
+    "/schools/:code/admin/:path*",
+    "/schools/:code/student/:path*",
+    "/schools/:code/parent/:path*",
+    "/schools/:code/teacher/:path*",
+    "/schools/:code/list/:path*",
   ],
 };

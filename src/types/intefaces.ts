@@ -9,10 +9,12 @@ export interface UserType {
   email?: string;
   gender?: string;
   phone?: string;
+  address?: string;
   accessTokenExpires?: number;
   schoolLogo?: string;
   schoolName?: string;
   schoolShortName?: string;
+  schoolCode?: string;
   // refreshTOken?: string;
 }
 
