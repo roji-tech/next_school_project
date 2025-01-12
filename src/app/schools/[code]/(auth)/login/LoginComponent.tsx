@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
-import { setCookie } from "@/lib/utils";
+import { getActualPath, setCookie } from "@/lib/utils";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 
@@ -45,7 +45,7 @@ export function LoginComponent() {
           toast.error(result.error); // Set the error message if login fails
         }
       } else {
-        router.push("/dashboard"); // Redirect to the homepage or desired route on success
+        router.push(`${getActualPath("/dashboard")}`); // Redirect to the homepage or desired route on success
       }
     } catch (error) {
       console.warn("Login failed:", error);

@@ -25,7 +25,7 @@ export default function AccountPage() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href={getActualPath("/dashboard")}>Dashboard</Link>
+              <Link href={`${getActualPath("/dashboard")}`}>Dashboard</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

@@ -90,7 +90,7 @@ axiosInstance.interceptors.response.use(
         return await axiosInstance(originalRequest);
       } catch (refreshError) {
         console.log("An error occurred: ", refreshError);
-        alert("error");
+        // alert("error");
         processQueue(refreshError, null);
         await handleSignOut(); // Log the user out if token refresh fails
         return Promise.reject(refreshError);

@@ -5,8 +5,9 @@ import {
   Bookmark,
   SquarePen,
   LayoutGrid,
-  LucideIcon
+  LucideIcon,
 } from "lucide-react";
+import { getActualPath } from "./utils";
 
 type Submenu = {
   href: string;
@@ -33,12 +34,12 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "",
       menus: [
         {
-          href: "/dashboard",
+          href: `${getActualPath("/dashboard")}`,
           label: "Dashboard",
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
       groupLabel: "Contents",
@@ -49,41 +50,41 @@ export function getMenuList(pathname: string): Group[] {
           icon: SquarePen,
           submenus: [
             {
-              href: "/posts",
-              label: "All Posts"
+              href: `${getActualPath("/posts")}`,
+              label: "All Posts",
             },
             {
-              href: "/posts/new",
-              label: "New Post"
-            }
-          ]
+              href: `${getActualPath("/posts/new")}`,
+              label: "New Post",
+            },
+          ],
         },
         {
-          href: "/categories",
+          href: `${getActualPath("/categories")}`,
           label: "Categories",
-          icon: Bookmark
+          icon: Bookmark,
         },
         {
-          href: "/tags",
+          href: `${getActualPath("/tags")}`,
           label: "Tags",
-          icon: Tag
-        }
-      ]
+          icon: Tag,
+        },
+      ],
     },
     {
       groupLabel: "Settings",
       menus: [
         {
-          href: "/users",
+          href: `${getActualPath("/users")}`,
           label: "Users",
-          icon: Users
+          icon: Users,
         },
         {
           href: "/account",
           label: "Account",
-          icon: Settings
-        }
-      ]
-    }
+          icon: Settings,
+        },
+      ],
+    },
   ];
 }

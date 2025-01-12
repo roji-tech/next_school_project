@@ -4,7 +4,7 @@ import { SidebarToggle } from "@/components/admin-panel/sidebar-toggle";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { useStore } from "@/hooks/use-store";
-import { cn } from "@/lib/utils";
+import { cn, getActualPath } from "@/lib/utils";
 import { PanelsTopLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -34,7 +34,10 @@ export function Sidebar() {
           variant="link"
           asChild
         >
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link
+            href={`${getActualPath("/dashboard")}`}
+            className="flex items-center gap-2"
+          >
             <PanelsTopLeft className="w-6 h-6 mr-1" />
             <h1
               className={cn(

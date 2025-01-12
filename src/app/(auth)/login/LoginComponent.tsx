@@ -65,11 +65,11 @@ export function LoginComponent() {
     } bg-[#FAF7EE] ${otherStyles} `;
 
   useEffect(() => {
-    const schoolCode = globalThis.localStorage.getItem("SCHOOL_CODE");
+    const schoolCode = globalThis.localStorage?.getItem("SCHOOL_CODE");
     console.log(schoolCode);
 
     if (schoolCode) {
-      alert(schoolCode);
+      // alert(schoolCode);
       router.replace(`/schools/${schoolCode}/login`);
     }
   }, []);

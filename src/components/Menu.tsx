@@ -1,4 +1,5 @@
 import { role } from "@/lib/data";
+import { getActualPath } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,85 +10,85 @@ export const menuItems = [
       {
         icon: "/home.png",
         label: "Home",
-        href: "/dashboard",
+        href: `${getActualPath("/dashboard")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/teacher.png",
         label: "Teachers",
-        href: "/list/teachers",
+        href: `${getActualPath("/list/teachers")}`,
         visible: ["admin", "teacher"],
       },
       {
         icon: "/student.png",
         label: "Students",
-        href: "/list/students",
+        href: `${getActualPath("/list/students")}`,
         visible: ["admin", "teacher"],
       },
       {
         icon: "/parent.png",
         label: "Parents",
-        href: "/list/parents",
+        href: `${getActualPath("/list/parents")}`,
         visible: ["admin", "teacher"],
       },
       {
         icon: "/subject.png",
         label: "Subjects",
-        href: "/list/subjects",
+        href: `${getActualPath("/list/subjects")}`,
         visible: ["admin"],
       },
       {
         icon: "/class.png",
         label: "Classes",
-        href: "/list/classes",
+        href: `${getActualPath("/list/classes")}`,
         visible: ["admin", "teacher"],
       },
       {
         icon: "/lesson.png",
         label: "Lessons",
-        href: "/list/lessons",
+        href: `${getActualPath("/list/lessons")}`,
         visible: ["admin", "teacher"],
       },
       {
         icon: "/exam.png",
         label: "Exams",
-        href: "/list/exams",
+        href: `${getActualPath("/list/exams")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/assignment.png",
         label: "Assignments",
-        href: "/list/assignments",
+        href: `${getActualPath("/list/assignments")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/result.png",
         label: "Results",
-        href: "/list/results",
+        href: `${getActualPath("/list/results")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/attendance.png",
         label: "Attendance",
-        href: "/list/attendance",
+        href: `${getActualPath("/list/attendance")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/calendar.png",
         label: "Events",
-        href: "/list/events",
+        href: `${getActualPath("/list/events")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/message.png",
         label: "Messages",
-        href: "/list/messages",
+        href: `${getActualPath("/list/messages")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/announcement.png",
         label: "Announcements",
-        href: "/list/announcements",
+        href: `${getActualPath("/list/announcements")}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
     ],
@@ -125,7 +126,7 @@ const Menu = () => {
           <span className="hidden lg:block text-gray-400 font-light my-1">
             {i.title}
           </span>
-         {i.items.map((item) => {
+          {i.items.map((item) => {
             if (item.visible.includes(role)) {
               return (
                 <Link

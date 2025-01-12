@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { UserType } from "@/types/intefaces";
+import { getActualPath } from "@/lib/utils";
 
 export default function DashboardLayout({
   children,
@@ -50,7 +51,7 @@ export default function DashboardLayout({
       {/* LEFT */}
       <div className="flex flex-col justify-between w-[9%] lg:w-[15%] xl:w-[14%] max-sm:hidden max-h-screen overflow-hidden">
         <Link
-          href="/dashboard"
+          href={`${getActualPath("/dashboard")}`}
           className="flex items-center justify-center p-2 lg:justify-start gap-2 h-14"
           title={session?.user?.schoolName}
         >

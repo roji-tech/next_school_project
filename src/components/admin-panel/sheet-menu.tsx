@@ -8,8 +8,9 @@ import {
   SheetHeader,
   SheetContent,
   SheetTrigger,
-  SheetTitle
+  SheetTitle,
 } from "@/components/ui/sheet";
+import { getActualPath } from "@/lib/utils";
 
 export function SheetMenu() {
   return (
@@ -26,7 +27,10 @@ export function SheetMenu() {
             variant="link"
             asChild
           >
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link
+              href={`${getActualPath("/dashboard")}`}
+              className="flex items-center gap-2"
+            >
               <PanelsTopLeft className="w-6 h-6 mr-1" />
               <SheetTitle className="font-bold text-lg">Brand</SheetTitle>
             </Link>

@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       verifyTenantSchool(code as string);
     }
 
-    alert(code);
+    // alert(code);
 
     localStorage.setItem("SCHOOL_CODE", code as string);
   }, [code]);

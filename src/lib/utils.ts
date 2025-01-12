@@ -12,13 +12,15 @@ export const setCookie = (name: string, value: string, days: number) => {
   document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Strict; Secure`;
 };
 
-export const getActualPath = async (path: string) => {
-  const session: any = await getSession(); // Assuming this function is defined elsewhere
-  const user: UserType = session?.user;
-  console.log(session, "getactual session");
-  const schoolCode =
-    user.schoolShortName ||
-    user.schoolCode ||
-    globalThis.localStorage.getItem("SCHOOL_CODE");
-  return `schools/${schoolCode}/${path}/` as string;
+export const getActualPath = (path: string) => {
+  // const session: any = await getSession(); // Assuming this function is defined elsewhere
+  // const user: UserType = session?.user;
+  // const schoolCode =
+  //   user?.schoolShortName && user?.schoolShortName != "None"
+  //     ? user?.schoolShortName
+  //     : user?.schoolCode || globalThis.localStorage.getItem("SCHOOL_CODE");
+
+  const schoolCode = globalThis.localStorage?.getItem("SCHOOL_CODE");
+  console.log("getactual session", schoolCode);
+  return `/schools/${schoolCode}/${path}/` as string;
 };
