@@ -45,8 +45,18 @@ const LessonListPage = () => {
         <div className="flex items-center gap-2">
           {role === "admin" && (
             <>
-              <FormModal table="lesson" type="update" data={item} />
-              <FormModal table="lesson" type="delete" id={item.id} />
+              <FormModal
+                table="lesson"
+                type="update"
+                data={item}
+                callback={() => {}}
+              />
+              <FormModal
+                table="lesson"
+                type="delete"
+                id={item.id}
+                callback={() => {}}
+              />
             </>
           )}
         </div>
@@ -68,7 +78,9 @@ const LessonListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-schYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && <FormModal table="lesson" type="create" />}
+            {role === "admin" && (
+              <FormModal table="lesson" type="create" callback={() => {}} />
+            )}
           </div>
         </div>
       </div>

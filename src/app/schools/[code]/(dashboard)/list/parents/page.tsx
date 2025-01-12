@@ -59,8 +59,18 @@ const ParentListPage = () => {
         <div className="flex items-center gap-2">
           {role === "admin" && (
             <>
-              <FormModal table="parent" type="update" data={item} />
-              <FormModal table="parent" type="delete" id={item.id} />
+              <FormModal
+                table="parent"
+                type="update"
+                data={item}
+                callback={() => {}}
+              />
+              <FormModal
+                table="parent"
+                type="delete"
+                id={item.id}
+                callback={() => {}}
+              />
             </>
           )}
         </div>
@@ -83,7 +93,7 @@ const ParentListPage = () => {
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <FormModal table="teacher" type="create"/>
+              <FormModal table="teacher" type="create" callback={() => {}} />
             )}
           </div>
         </div>
