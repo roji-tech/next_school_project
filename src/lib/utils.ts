@@ -1,7 +1,7 @@
-import { UserType } from "@/types/intefaces";
 import { clsx, type ClassValue } from "clsx";
-import { getSession } from "next-auth/react";
 import { twMerge } from "tailwind-merge";
+// import { getSession } from "next-auth/react";
+// import { UserType } from "@/types/intefaces";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,4 +23,10 @@ export const getActualPath = (path: string) => {
   const schoolCode = globalThis.localStorage?.getItem("SCHOOL_CODE");
   console.log("getactual session", schoolCode);
   return `/schools/${schoolCode}/${path}/` as string;
+};
+
+export const getApiUrl = (path: string) => {
+  const schoolCode = globalThis.localStorage?.getItem("SCHOOL_CODE");
+  console.log("getactual session", schoolCode);
+  return `/${schoolCode}/api/v1${path}` as string;
 };

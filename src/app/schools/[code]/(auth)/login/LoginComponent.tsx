@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
@@ -59,6 +59,14 @@ export function LoginComponent() {
     `w-full px-4 py-2 border rounded-sm outline outline-none hover:outline-[0.5px] ${
       condition ? "border-red-500" : "border-none"
     } bg-[#FAF7EE] ${otherStyles} `;
+
+
+    useEffect(() => {
+      
+    
+     
+    }, [])
+    
 
   return (
     <div className="flex items-center justify-center bg-gray-100 max-w-[583px]">

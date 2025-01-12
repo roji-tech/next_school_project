@@ -71,6 +71,8 @@ export function LoginComponent() {
     if (schoolCode) {
       // alert(schoolCode);
       router.replace(`/schools/${schoolCode}/login`);
+    } else {
+      router.replace(`/schools`);
     }
   }, []);
 

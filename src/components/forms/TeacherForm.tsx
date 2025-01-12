@@ -11,6 +11,8 @@ import { CircleUserRound } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/compat/router";
 import { MyFormProps } from "@/types/intefaces";
+import { get } from "http";
+import { getApiUrl } from "@/lib/utils";
 
 const schema = z.object({
   username: z
@@ -93,7 +95,9 @@ const TeacherForm = ({ type, data, successFunction }: MyFormProps) => {
     }
 
     try {
-      const url = type === "create" ? "/teachers/" : `/teachers/${data.id}/`;
+      let url = type === "create" ? "/teachers/" : `/teachers/${data.id}/`;
+      url = getApiUrl(url);
+
       const method = type === "create" ? "post" : "put";
 
       const response = await axiosInstance({

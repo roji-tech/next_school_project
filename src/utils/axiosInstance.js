@@ -1,10 +1,10 @@
 import axios from "axios";
 import { getSession, signOut } from "next-auth/react";
 import { handleSignOut, updateSessionWithToken } from "./authHelpers";
-import { API_URL } from "../../config";
+import { API_URL, BASE_URL } from "../../config";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || API_URL, // Base URL for your API
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || BASE_URL, // Base URL for your API
   headers: {
     "Content-Type": "application/json",
   },

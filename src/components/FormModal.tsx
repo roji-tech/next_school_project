@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useState } from "react";
+import { FormEventHandler, ReactNode, useState } from "react";
 
 // USE LAZY LOADING
 
@@ -42,6 +42,8 @@ const FormModal = ({
   type,
   data,
   id,
+  callback = () => {},
+  moreTnfo = "",
 }: {
   table:
     | "teacher"
@@ -59,6 +61,8 @@ const FormModal = ({
   type: "create" | "update" | "delete";
   data?: any;
   id?: number;
+  callback: Function;
+  moreTnfo?: string | ReactNode;
 }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
@@ -70,20 +74,27 @@ const FormModal = ({
 
   const [open, setOpen] = useState(false);
 
-  const successCallback = (func: Function) => {
+  const successCallback = () => {
     setOpen(false);
+    callback();
+  };
 
-    console.log(func);
-    if (typeof func == "function") {
-      func();
+  const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    try {
+      callback();
+      setOpen(false);
+    } catch (error) {
+      console.error("Error deleting item:", error);
     }
   };
 
   const Form = () => {
     return type === "delete" && id ? (
-      <form action="" className="p-4 flex flex-col gap-4">
+      <form onSubmit={handleDelete} className="p-4 flex flex-col gap-4">
         <span className="text-center font-medium">
           All data will be lost. Are you sure you want to delete this {table}?
+          &nbsp; {moreTnfo}
         </span>
         <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
           Delete
@@ -101,6 +112,7 @@ const FormModal = ({
       <button
         className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
+        title={type}
       >
         <Image src={`/${type}.png`} alt="" width={16} height={16} />
       </button>

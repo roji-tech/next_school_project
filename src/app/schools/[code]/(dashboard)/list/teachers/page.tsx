@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import axiosInstance from "@/utils/axiosInstance";
+import { getApiUrl } from "@/lib/utils";
 
 type Teacher = {
   id: number;
@@ -64,31 +65,34 @@ const TeacherListPage = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchTeachers = async () => {
-      try {
-        const response = await axiosInstance.get("/teachers/school-teachers/");
-        console.log(response.data);
-        const formattedTeachers = response.data.map((teacher: any) => ({
-          id: teacher.id,
-          teacherId: teacher.user.id.toString(),
-          name: `${teacher.user.first_name} ${teacher.user.last_name}`,
-          email: teacher.user.email,
-          photo: teacher.user.image || "/avatar.png",
-          phone: teacher.user.phone,
-          subjects: [teacher.department, ""],
-          classes: [], // Assuming classes data is not available in the response
-          address: "", // Assuming address data is not available in the response
-        }));
-        setTeachers(formattedTeachers);
-      } catch (error: any) {
-        console.warn("Error fetching teachers:", error);
-        console.warn("Error fetching teachers:", error?.response);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTeachers = async () => {
+    try {
+      const url = `${getApiUrl("/teachers/")}`;
+      const response = await axiosInstance.get(url);
+      console.log(url);
+      console.log(response.data);
+      const formattedTeachers = response.data.map((teacher: any) => ({
+        id: teacher.id,
+        teacherId: teacher.user.id.toString(),
+        name: `${teacher.user.first_name} ${teacher.user.last_name}`,
+        email: teacher.user.email,
+        photo: teacher.user.image || "/avatar.png",
+        phone: teacher.user.phone,
+        department: teacher.department,
+        subjects: [teacher.department, ""],
+        classes: [],
+        address: "",
+      }));
+      setTeachers(formattedTeachers);
+    } catch (error: any) {
+      console.warn("Error fetching teachers:", error);
+      console.warn("Error fetching teachers:", error?.response);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTeachers();
   }, []);
 
@@ -117,14 +121,20 @@ const TeacherListPage = () => {
       <td className="hidden md:table-cell">{item.address}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
+          <Link title="View" href={`/list/teachers/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-schSky">
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
           {role === "admin" && (
             <>
-              <FormModal table="teacher" type="delete" id={item.id} />
+              <FormModal
+                table="teacher"
+                type="delete"
+                id={item.id}
+                callback={fetchTeachers}
+                moreTnfo={`( ${item.name} )`}
+              />
             </>
           )}
         </div>
@@ -148,7 +158,11 @@ const TeacherListPage = () => {
 
             {role === "admin" && (
               <>
-                <FormModal table="teacher" type="create" />
+                <FormModal
+                  table="teacher"
+                  type="create"
+                  callback={fetchTeachers}
+                />
               </>
             )}
           </div>

@@ -9,6 +9,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { getApiUrl } from "@/lib/utils";
 
 type Student = {
   id: number;
@@ -64,8 +65,10 @@ const StudentListPage = () => {
 
   const fetchStudents = async () => {
     try {
+      const url = `${getApiUrl("/students/")}`;
+
       setIsLoading(true);
-      const response = await axiosInstance.get("/students/", {
+      const response = await axiosInstance.get(url, {
         params: { q: searchQuery, page: currentPage },
       });
       const { results, total_pages } = response.data;
@@ -112,7 +115,12 @@ const StudentListPage = () => {
             </button>
           </Link>
           {session?.user?.role === "admin" && (
-            <FormModal table="student" type="delete" id={item.id} />
+            <FormModal
+              table="student"
+              type="delete"
+              id={item.id}
+              callback={fetchStudents}
+            />
           )}
         </div>
       </td>
@@ -134,7 +142,11 @@ const StudentListPage = () => {
               <Image src="/sort.png" alt="Sort" width={14} height={14} />
             </button>
             {session?.user?.role === "admin" && (
-              <FormModal table="student" type="create" />
+              <FormModal
+                table="student"
+                type="create"
+                callback={fetchStudents}
+              />
             )}
           </div>
         </div>
