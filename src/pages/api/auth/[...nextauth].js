@@ -91,7 +91,7 @@ export default async function auth(req, res) {
               url: `${API_URL}/auth/login/`,
               method: "post",
               headers: {
-              "Content-Type": "application/json",
+                "Content-Type": "application/json",
               },
               data: { email, password },
             };
